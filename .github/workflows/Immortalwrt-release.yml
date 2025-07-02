@@ -82,7 +82,7 @@ jobs:
         run: |
           ls
           pwd
-          sudo chown -R runner:runner /home/runner/work/OpenWrt_Build
+          sudo chown -R runner:runner /home/runner/work/OpenWrt_Build_ac2100
           ls
           pwd
           latest_release="$(curl -s https://github.com/immortalwrt/immortalwrt/tags | grep -Eo "v[0-9\.]+\-*r*c*[0-9]*.tar.gz" | sed -n '/[2-9][0-9]/p' | sed -n 1p | sed 's/.tar.gz//g')"
