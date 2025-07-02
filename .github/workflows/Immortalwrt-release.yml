@@ -18,7 +18,7 @@ on:
         default: 'false'
         type: boolean
       SSH_CONFIG:
-        description: '修改配置文件的SSH命令（如sed/echo等）'
+        description: '配置文件命令（如sed/echo等），或填 webshell 进入调试终端'
         required: false
         default: ''
         type: string
@@ -105,8 +105,13 @@ jobs:
           mv ../SEED/config-release.seed .config
           sed -i '/CONFIG_TARGET_ROOTFS_SQUASHFS/d' .config
           make defconfig
+      - name: SSH Web Shell (debug/optional)
+        if: github.event.inputs.SSH_CONFIG == 'webshell'
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
       - name: SSH Config Edit
-        if: github.event.inputs.SSH_CONFIG != ''
+        if: github.event.inputs.SSH_CONFIG != '' && github.event.inputs.SSH_CONFIG != 'webshell'
         run: |
           cd openwrt
           echo "执行SSH配置命令: ${{ github.event.inputs.SSH_CONFIG }}"
