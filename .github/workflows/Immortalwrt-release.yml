@@ -105,11 +105,10 @@ jobs:
           mv ../SEED/config-release.seed .config
           sed -i '/CONFIG_TARGET_ROOTFS_SQUASHFS/d' .config
           make defconfig
-      - name: SSH Web Shell (debug/optional)
-        if: github.event.inputs.SSH_ACTION == 'true'
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
+      - name: SSH远程连接（make menuconfig）
+        if: env.SSH_ACTION == 'true'
+        uses: danshui-git/debugger-action@main
+
       - name: Cache
         uses: HiGarfield/cachewrtbuild@main
         with:
