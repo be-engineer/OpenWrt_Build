@@ -1,4 +1,12 @@
 #!/bin/bash
+###
+ # @Author       : Leon Lee
+ # @Date         : 2025-07-02 15:04:54
+ # @LastEditors  : Leon
+ # @LastEditTime : 2025-07-02 15:13:46
+ # @Description  : file content
+ # @FilePath     : /OpenWrt_Build/SCRIPTS/prepare_package.sh
+### 
 clear
 
 ### 基础部分 ###
@@ -34,7 +42,7 @@ sed -i "s/'%D %V %C'/'Built by Coupile($(date +%Y.%m.%d))@%D %V'/g" package/base
 
 ## 修改主机名和默认IP
 sed -i "s,hostname='ImmortalWrt',hostname='OpenWrt',g" package/base-files/files/bin/config_generate
-sed -i 's/192.168.1.1/192.168.10.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.50.254/g' package/base-files/files/bin/config_generate
 
 ## 替换node，加速编译
 rm -rf feeds/packages/lang/node

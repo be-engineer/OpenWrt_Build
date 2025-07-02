@@ -17,6 +17,11 @@ on:
         required: true
         default: 'false'
         type: boolean
+      SSH_CONFIG:
+        description: '修改配置文件的SSH命令（如sed/echo等）'
+        required: false
+        default: ''
+        type: string
              
 env:
   TZ: Asia/Shanghai
@@ -100,6 +105,12 @@ jobs:
           mv ../SEED/config-release.seed .config
           sed -i '/CONFIG_TARGET_ROOTFS_SQUASHFS/d' .config
           make defconfig
+      - name: SSH Config Edit
+        if: github.event.inputs.SSH_CONFIG != ''
+        run: |
+          cd openwrt
+          echo "执行SSH配置命令: ${{ github.event.inputs.SSH_CONFIG }}"
+          eval "${{ github.event.inputs.SSH_CONFIG }}"
       - name: Cache
         uses: HiGarfield/cachewrtbuild@main
         with:
@@ -139,18 +150,22 @@ jobs:
         run: |
           rm -rf ./artifact/
           mkdir -p ./artifact/
-          mv openwrt/bin/targets/x86/64/*combined-efi.img* ./artifact/
-          
+          # 适配 ramips/mt7621/ac2100 固件输出路径
+          mv openwrt/bin/targets/ramips/mt7621/*ac2100* ./artifact/ || true
+          mv openwrt/bin/targets/ramips/mt7621/*sysupgrade.bin ./artifact/ || true
+          mv openwrt/bin/targets/ramips/mt7621/*factory.bin ./artifact/ || true
+
           cd ./artifact/
           ls -Ahl
-          gzip -d *.gz && exit 0
-          gzip --best *.img
+          gzip -d *.gz || true
+          gzip --best *.bin || true
           ls -Ahl
           releaseTag=${{ env.latest_release }}
-          sha256sum immortalwrt*x86* | tee X86-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}.sha256sum
-          zip X86-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-ext4.zip *ext4-combined*
-          zip X86-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-sfs.zip *squashfs-combined*
-          zip -j dl.zip ../openwrt/dl/*
+          # 适配 ramips/ac2100 固件命名
+          sha256sum *ac2100* | tee AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}.sha256sum || true
+          zip AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-sysupgrade.zip *sysupgrade*
+          zip AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-factory.zip *factory*
+          zip -j dl.zip ../openwrt/dl/* || true
           cd ../openwrt
           cp .config ../artifact/config-full.seed
           ./scripts/diffconfig.sh > ../artifact/config-diff.seed
@@ -179,4 +194,4 @@ jobs:
         with:
             retain_days: 1
             keep_minimum_runs: 1
-  
+
