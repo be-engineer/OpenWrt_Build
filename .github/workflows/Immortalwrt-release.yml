@@ -107,7 +107,7 @@ jobs:
           make defconfig
       - name: SSH远程连接（make menuconfig）
         if: github.event.inputs.SSH_ACTION == 'true'
-        uses: danshui-git/debugger-action@main
+        uses: mxschmitt/action-tmate@v3
 
       - name: Cache
         uses: HiGarfield/cachewrtbuild@main
