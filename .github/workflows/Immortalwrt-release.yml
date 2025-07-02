@@ -163,7 +163,7 @@ jobs:
           # 适配 ramips/ac2100 固件命名
           sha256sum *ac2100* | tee AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}.sha256sum || true
           zip AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-sysupgrade.zip *sysupgrade*
-          zip AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-factory.zip *factory*
+          ls *factory* 2>/dev/null && zip AC2100-OpenWrt-$(date +%Y-%m-%d)-${{ env.latest_release }}-factory.zip *factory* || echo "No factory images to zip."
           zip -j dl.zip ../openwrt/dl/* || true
           cd ../openwrt
           cp .config ../artifact/config-full.seed
