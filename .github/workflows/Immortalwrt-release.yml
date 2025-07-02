@@ -15,13 +15,13 @@ on:
       UPLOAD_ARTIFACT:
         description: '是否上传artifact'
         required: true
+        default: '
+        type: boolean
+      SSH_ACTION:
+        description: 'SSH远程配置固件'
+        required: false
         default: 'false'
         type: boolean
-      SSH_CONFIG:
-        description: '配置文件命令（如sed/echo等），或填 webshell 进入调试终端'
-        required: false
-        default: ''
-        type: string
              
 env:
   TZ: Asia/Shanghai
@@ -106,16 +106,10 @@ jobs:
           sed -i '/CONFIG_TARGET_ROOTFS_SQUASHFS/d' .config
           make defconfig
       - name: SSH Web Shell (debug/optional)
-        if: github.event.inputs.SSH_CONFIG == 'webshell'
+        if: github.event.inputs.SSH_ACTION == 'true'
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-      - name: SSH Config Edit
-        if: github.event.inputs.SSH_CONFIG != '' && github.event.inputs.SSH_CONFIG != 'webshell'
-        run: |
-          cd openwrt
-          echo "执行SSH配置命令: ${{ github.event.inputs.SSH_CONFIG }}"
-          eval "${{ github.event.inputs.SSH_CONFIG }}"
       - name: Cache
         uses: HiGarfield/cachewrtbuild@main
         with:

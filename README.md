@@ -1,4 +1,4 @@
-<h1 align="center">X86-OpenWrt</h1>
+<h1 align="center">ac2100-OpenWrt</h1>
 <p align="center">
 <img src="https://forthebadge.com/images/badges/built-with-love.svg">
 <p>
@@ -10,14 +10,13 @@
 <img src="https://github.com/r1172464137/OpenWrt_Build/actions/workflows/Immortalwrt-release.yml/badge.svg">
 <p>
 
-<h1 align="center">请勿用于商业用途!!!</h1>
 
 ## 当前已知问题:
 - 无
 ## 说明
 * ImmortalWrt Release 
 * Linux-kernel: 5.15.x
-* ipv4: 192.168.10.1
+* ipv4: 192.168.50.254
 * 个人吃鹅固件
 * username: root
 * password: 空 / password
